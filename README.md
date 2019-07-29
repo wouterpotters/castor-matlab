@@ -1,5 +1,5 @@
 # castor-matlab
-Matlab class to connect to castor API on https://data.castoredc.com/api#/
+Matlab class to connect to castor API on https://data.castoredc.com/api#/. First draft, so don't expect miracles. 
 
 ## usage
 ```Matlab
