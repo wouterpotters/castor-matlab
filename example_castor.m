@@ -2,7 +2,7 @@
 
 % 1. define credentials
 % THIS IS SUPER SENSITIVE DATA! NEVER SHARE THESE TWO LINES WITH ANYONE.
-% If you an, put these data in a seperate folder where only you have access 
+% If you can, put these data in a seperate folder where only you have access 
 % and load the client_id and client_secret from there.
 % 
 % create secret: 
