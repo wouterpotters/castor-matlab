@@ -47,6 +47,6 @@ for irec = records % loop over all records
     fprintf('Patient %s: sex# %s\n',irec.record_id,sex);
 end
 
-% what does the number 'sex' mean?
+% To find out what the option number means; check the option_group?
 % subject_sex.option_group.options.value: 1, 2
 % subject_sex.option_group.options.name: male, female (can be different for your study!)
