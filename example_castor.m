@@ -15,9 +15,6 @@
 client_id = 'SOMTHING-LIKE-TH1S-BLAB-LA1236789101';
 client_secret = '12abc345627890example';
 
-id_secret = textread('H:\Scripts\ca_id_secret','%s'); %#ok<DTXTRD>
-client_id = id_secret{1}; client_secret = id_secret{2};
-
 % create connection to castor
 % this creates a instance c of class castor. This can then be used to
 % request data from Castor. Do not save and/or share with others
