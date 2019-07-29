@@ -204,7 +204,11 @@ classdef castor
             data = [ 'client_id=', obj.client_id,...
                      '&client_secret=', obj.client_secret,...
                      '&grant_type=client_credentials'];
-            response = webwrite(url,data);
+            try
+                 response = webwrite(url,data);
+            catch err
+                error('Connecting to CASTOR failed. Make sure that you provide a valid client_id and client_secret! \n\nUSAGE: castor_instance = castor(client_id,client_secret). \n\n[error message: %s]',err.message)
+            end
             access_token = response.access_token;
             
             % save access token for future calls
@@ -230,7 +234,7 @@ end
 switch type
     case {'user','study','country','institutes','fields','metadatas','records','fieldOptionGroups'}
         if isfield(result_raw,'x_embedded')
-            result = result_raw.x_embedded.(type);
+            result = result_raw.x_embedded.(type).'; % transpose to make it an horizontal array with 1 row, multiple columns
         elseif isfield(result_raw,'results')
             result = result_raw.results;
         else
