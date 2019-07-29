@@ -2,7 +2,7 @@
 
 % 1. define credentials
 % THIS IS SUPER SENSITIVE DATA! NEVER SHARE THESE TWO LINES WITH ANYONE.
-% If you an, put these data in a seperate folder where only you have access 
+% If you can, put these data in a seperate folder where only you have access 
 % and load the client_id and client_secret from there.
 % 
 % create secret: 
@@ -14,9 +14,6 @@
 % 6) copy the two items in the 2 lines below
 client_id = 'SOMTHING-LIKE-TH1S-BLAB-LA1236789101';
 client_secret = '12abc345627890example';
-
-id_secret = textread('H:\Scripts\ca_id_secret','%s'); %#ok<DTXTRD>
-client_id = id_secret{1}; client_secret = id_secret{2};
 
 % create connection to castor
 % this creates a instance c of class castor. This can then be used to
@@ -50,6 +47,6 @@ for irec = records % loop over all records
     fprintf('Patient %s: sex# %s\n',irec.record_id,sex);
 end
 
-% what does the number 'sex' mean?
+% To find out what the option number means; check the option_group?
 % subject_sex.option_group.options.value: 1, 2
 % subject_sex.option_group.options.name: male, female (can be different for your study!)
