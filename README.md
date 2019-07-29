@@ -62,3 +62,6 @@ Currently not all endpoints from the API (as described on ) are implemented. Fee
     * /study/{study_id}/data-point-collection/survey-package-instance/{survey_package_instance_id}
     * /study/{study_id}/survey/{survey_id}/survey-step
     * /study/{study_id}/survey/{survey_id}/survey-step/{survey_step_id}
+
+## note
+I am not affiliated with Matlab or Castor. 
