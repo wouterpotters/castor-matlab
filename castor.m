@@ -183,6 +183,38 @@ classdef castor
                 end
             end
             
+            % check if more pages are present...
+            temp = [];
+            if isfield(result_raw,'page') && isfield(result_raw,'page_count')
+                while result_raw.page_count > result_raw.page
+                    for f = fieldnames(result_raw.x_embedded)
+                        if isempty(temp)
+                            temp = result_raw.x_embedded;
+                        else
+                            temp.(f{1}) = cat(1,temp.(f{1}), result_raw.x_embedded.(f{1}));
+                        end
+                    end
+                    try % try getting result
+                        result_raw = webread([result_raw.x_links.next.href],obj.sessionoptions);
+                    catch err % catch errors
+                        switch err.identifier
+                            case 'MATLAB:webservices:HTTP404StatusCodeError'
+                                warning(err.identifier,'404 NOT FOUND: %s',err.message);
+                                result = '';
+                                return
+                            otherwise
+                                rethrow(err)
+                        end
+                    end
+                end
+                if ~isempty(temp)
+                    result_raw.x_embedded = temp;
+                    result_raw = rmfield(result_raw,'page_count');
+                    result_raw = rmfield(result_raw,'page_size');
+                    result_raw = rmfield(result_raw,'page');
+                end
+            end
+            
             % parse raw result
             result = parse_result(type,result_raw);
         end
@@ -232,7 +264,7 @@ if isfield(result_raw,'page_count')
     end
 end
 switch type
-    case {'user','study','country','institutes','fields','metadatas','records','fieldOptionGroups'}
+    case {'user','study','country','institutes','fields','metadatas','records','fieldOptionGroups','fieldDependencies'}
         if isfield(result_raw,'x_embedded')
             result = result_raw.x_embedded.(type).'; % transpose to make it an horizontal array with 1 row, multiple columns
         elseif isfield(result_raw,'results')
