@@ -15,6 +15,7 @@ classdef castor
         sessionoptions = weboptions()
         supported_requests = {'country',...
             'data-point-collection',...
+            'export',...
             'field',...
             'field-dependency',...
             'field-optiongroup',...
@@ -118,6 +119,7 @@ classdef castor
             % TYPE s allowed: 
             % 'country',
             % 'data-point-collection',
+            % 'export',
             % 'field',
             % 'field-dependency',
             % 'field-optiongroup',
@@ -145,6 +147,12 @@ classdef castor
             % supported_requests)
             if ~ismember(type,obj.supported_requests)
                 error('request type ''%s'' is not supported',type)
+            end
+            
+            % default content type: json
+            % this is different for export: table
+            if ismember(type,{'export'})
+                obj.sessionoptions.ContentType = 'table';
             end
             
             % check if input arguments are valid (=char or struct)
@@ -180,38 +188,6 @@ classdef castor
                         return
                     otherwise
                         rethrow(err)
-                end
-            end
-            
-            % check if more pages are present...
-            temp = [];
-            if isfield(result_raw,'page') && isfield(result_raw,'page_count')
-                while result_raw.page_count > result_raw.page
-                    for f = fieldnames(result_raw.x_embedded)
-                        if isempty(temp)
-                            temp = result_raw.x_embedded;
-                        else
-                            temp.(f{1}) = cat(1,temp.(f{1}), result_raw.x_embedded.(f{1}));
-                        end
-                    end
-                    try % try getting result
-                        result_raw = webread([result_raw.x_links.next.href],obj.sessionoptions);
-                    catch err % catch errors
-                        switch err.identifier
-                            case 'MATLAB:webservices:HTTP404StatusCodeError'
-                                warning(err.identifier,'404 NOT FOUND: %s',err.message);
-                                result = '';
-                                return
-                            otherwise
-                                rethrow(err)
-                        end
-                    end
-                end
-                if ~isempty(temp)
-                    result_raw.x_embedded = temp;
-                    result_raw = rmfield(result_raw,'page_count');
-                    result_raw = rmfield(result_raw,'page_size');
-                    result_raw = rmfield(result_raw,'page');
                 end
             end
             
@@ -275,6 +251,8 @@ switch type
     case 'study_data_point'
         % data with values
         result = result_raw.value;
+    case 'export'
+        result = result_raw
     otherwise
         warning('parsing not enabled for type ''%s'', using raw data',type);
         result = result_raw;
@@ -490,6 +468,24 @@ switch nargin
         request = sprintf('/study/%s/phase/%s',struct2id(study,'study'),struct2idphase(phase,'phase'));
     otherwise
         error('type study expects Study Struct/ID and (optionally) phase Struct/ID as input')
+end
+end
+
+function request = request_export(study,varargin)
+% REQUEST = request_export(study,varargin)
+narginchk(1,2);
+switch nargin
+    case 1
+        request =  sprintf('/study/%s/export/data',struct2id(study,'study'));
+    case 2
+        export_type = varargin{1};
+        if ischar(export_type) && ismember(export_type,{'data','structure','optiongroups'})
+            request =  sprintf('/study/%s/export/%s',struct2id(study,'study'),varargin{1});
+        else
+            error('export type should be data, structure or optiongroups; not %s',export_type);
+        end
+    otherwise
+        error('type study expects Study Struct/ID and (optionally) an export type (data,structure or optiongroups) as input')
 end
 end
 
