@@ -1,3 +1,5 @@
+[![View castor-matlab on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://nl.mathworks.com/matlabcentral/fileexchange/72308-castor-matlab)
+
 # castor-matlab
 Matlab class to connect to castor API on https://data.castoredc.com/api#/. First draft, so don't expect miracles. 
 
